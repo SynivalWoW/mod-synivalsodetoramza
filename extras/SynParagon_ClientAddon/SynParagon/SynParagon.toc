@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: SynParagon
+## Notes: Tier tag tooltips for CoffingQuest — Synival's Chosen system.
+## Author: CoffingQuest
+## Version: 1.0
+## DefaultState: Enabled
+SynParagon.lua

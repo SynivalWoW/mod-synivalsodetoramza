@@ -1,0 +1,876 @@
+###############################################################################
+# mod-synival-ode-to-ramza — Configuration
+# Synival's Ode to Ramza
+# Copy to your worldserver config directory and remove the .dist suffix.
+#
+# This module merges:
+#   • mod-guild-village  (BeardBear33)  — Guild village ownership & upgrades
+#   • mod-dungeon-master (InstanceForge) — Procedural dungeon challenge system
+#   • Guild Sanctuary Bridge (new)       — Vault NPC + guild dungeon rewards
+#   • mod-DungeonRespawn                 — In-dungeon respawn at last position
+###############################################################################
+
+[worldserver]
+
+###############################################################################
+# ──────────────────────────────────────────────────────────────────────────────
+#  SECTION 1 — GUILD VILLAGE  (from mod-guild-village / BeardBear33)
+# ──────────────────────────────────────────────────────────────────────────────
+###############################################################################
+
+# Language for module text (cs | en)
+# Default: en
+GuildVillage.Locale = en
+
+# Maximum number of active villages.
+#   -1 = unlimited   0 = disabled (GM command only)   1+ = hard cap
+# Default: -1
+GuildVillage.MaxVillages = -1
+
+# After how many days of Guild Master inactivity the village is auto-deleted.
+# 0 = disabled.
+# Default: 90
+GuildVillage.Inactivity.CleanupDays = 90
+
+# Show "X / Max" capacity message when opening the village gossip.
+# Default: 1
+GuildVillage.ShowCapacityMessage = 1
+
+# Who may use .village info ?
+#   0 = Guild Master only   1 = any guild member
+# Default: 1
+GuildVillage.Status.AllowAllMembers = 1
+
+# Restrict village purchase/management to Guild Master + Officers.
+# Default: true
+GuildVillage.RequireGuildMasterForPurchase = true
+
+# Hide the purchase/upgrade menu from non-GM/Officer players.
+# Default: true
+GuildVillage.HidePurchaseMenuForNonGM = true
+
+# Enable teleport-back (.v tp → return to previous position).
+# Default: true
+GuildVillage.Teleport.Back = true
+
+# ── Village Purchase Cost ────────────────────────────────────────────────────
+
+# Gold cost for purchasing a village (0 = free).
+# Default: 1000
+GuildVillage.Price.Gold = 1000
+
+# Required item entry (0 = none).
+# Default: 0
+GuildVillage.Price.ItemId = 0
+
+# Required item count (only evaluated when ItemId > 0).
+# Default: 0
+GuildVillage.Price.ItemCount = 0
+
+# ── Village Default Spawn Location ───────────────────────────────────────────
+
+# Map ID for the guild village world.
+# Default: 37  (Azshara — a large, mostly empty continent zone)
+GuildVillage.Default.Map   = 37
+
+# Spawn coordinates for the village entry point.
+GuildVillage.Default.X     = 1026.7292
+GuildVillage.Default.Y     = 289.9494
+GuildVillage.Default.Z     = 332.66083
+GuildVillage.Default.O     = 3.4305837
+
+# ── Currency Caps ─────────────────────────────────────────────────────────────
+
+# Enable per-guild currency caps (prevents overflow).
+# Default: true
+GuildVillage.CurrencyCap.Enabled    = true
+GuildVillage.CurrencyCap.Material1  = 1000
+GuildVillage.CurrencyCap.Material2  = 1000
+GuildVillage.CurrencyCap.Material3  = 1000
+GuildVillage.CurrencyCap.Material4  = 1000
+
+# ── Production ────────────────────────────────────────────────────────────────
+
+# Base hours between production cycles.
+# Default: 8
+GuildVillage.Production.BasePeriodHours  = 3
+
+# Base materials yielded per cycle.
+# Default: 5
+GuildVillage.Production.BaseAmount       = 5
+
+# Bonus amount per upgrade rank (1-3).
+GuildVillage.Production.AmountBonus1     = 3
+GuildVillage.Production.AmountBonus2     = 5
+GuildVillage.Production.AmountBonus3     = 7
+
+# Cycle time multiplier per upgrade rank (1.0 = no change; 0.5 = halved).
+GuildVillage.Production.SpeedMult1       = 0.75
+GuildVillage.Production.SpeedMult2       = 0.50
+GuildVillage.Production.SpeedMult3       = 0.25
+
+# How often (minutes) the server recalculates passive production.
+# Default: 15
+GuildVillage.Production.WorldTickMinutes = 15
+
+# Stop production after Guild Master is offline this many days. 0 = disabled.
+# Default: 7
+GuildVillage.Production.GMMaxOfflineDays = 7
+
+# ── Expeditions ───────────────────────────────────────────────────────────────
+
+# Enable the Expedition (hero-dispatch) system.
+# Default: 1
+GuildVillage.Expeditions.Enable = 1
+
+# Send feedback messages to players for expedition events.
+# Default: 1
+GuildVillage.Expeditions.Notify = 1
+
+# Allow Officers (in addition to GM) to manage expeditions.
+# Default: 1
+GuildVillage.Expeditions.OfficersCanManage = 1
+
+###############################################################################
+# ──────────────────────────────────────────────────────────────────────────────
+#  SECTION 2 — DUNGEON MASTER  (from mod-dungeon-master / InstanceForge)
+# ──────────────────────────────────────────────────────────────────────────────
+###############################################################################
+
+# Master on/off switch for the Dungeon Master subsystem.
+# Disabling this hides the Warden NPC gossip options.
+# Default: 1
+DungeonMaster.Enable = 1
+
+# Verbose debug logging for DM internals.
+# Default: 0
+DungeonMaster.Debug = 0
+
+# creature_template entry for the standalone Dungeon Master NPC
+# (spawned in major cities by dm_setup.sql).
+# The guild-specific Warden uses entry 501000 (see GuildSanctuary section).
+# Default: 500000
+DungeonMaster.NpcEntry = 500000
+
+# ── Difficulty Tiers ──────────────────────────────────────────────────────────
+# Format: "Name,MinLevel,MaxLevel,HealthMult,DamageMult,RewardMult,MobMult"
+
+DungeonMaster.Difficulty.1  = "Novice,10,19,0.6,0.6,1.0,0.5"
+DungeonMaster.Difficulty.2  = "Apprentice,20,29,0.8,0.8,1.5,0.7"
+DungeonMaster.Difficulty.3  = "Journeyman,30,44,1.0,1.0,2.0,0.85"
+DungeonMaster.Difficulty.4  = "Expert,45,59,1.3,1.2,3.0,1.0"
+DungeonMaster.Difficulty.5  = "Master,60,69,1.6,1.4,4.0,1.0"
+DungeonMaster.Difficulty.6  = "Grandmaster,70,80,2.0,1.6,6.0,1.2"
+DungeonMaster.Difficulty.7  = ""
+DungeonMaster.Difficulty.8  = ""
+DungeonMaster.Difficulty.9  = ""
+DungeonMaster.Difficulty.10 = ""
+
+# ── Creature Themes ───────────────────────────────────────────────────────────
+# Format: "DisplayName,CreatureType[,CreatureType...]"
+# Types: 1=Beast 2=Dragonkin 3=Demon 4=Elemental 5=Giant
+#        6=Undead 7=Humanoid 9=Mechanical -1=Any (random)
+
+DungeonMaster.Theme.1  = "Beast Hunt,1"
+DungeonMaster.Theme.2  = "Dragon's Lair,2"
+DungeonMaster.Theme.3  = "Demonic Invasion,3"
+DungeonMaster.Theme.4  = "Elemental Chaos,4"
+DungeonMaster.Theme.5  = "Giant's Keep,5"
+DungeonMaster.Theme.6  = "Undead Rising,6"
+DungeonMaster.Theme.7  = "Humanoid Stronghold,7"
+DungeonMaster.Theme.8  = "Mechanical Mayhem,9"
+DungeonMaster.Theme.9  = "Random Chaos,-1"
+DungeonMaster.Theme.10 = ""
+DungeonMaster.Theme.11 = ""
+DungeonMaster.Theme.12 = ""
+DungeonMaster.Theme.13 = ""
+DungeonMaster.Theme.14 = ""
+DungeonMaster.Theme.15 = ""
+DungeonMaster.Theme.16 = ""
+DungeonMaster.Theme.17 = ""
+DungeonMaster.Theme.18 = ""
+DungeonMaster.Theme.19 = ""
+DungeonMaster.Theme.20 = ""
+
+# ── Scaling ───────────────────────────────────────────────────────────────────
+
+# Creature level selection window: effective_level ± LevelBand.
+# Default: 3
+DungeonMaster.Scaling.LevelBand         = 3
+
+# HP multiplier added per additional party member beyond the first.
+# Default: 0.25
+DungeonMaster.Scaling.PerPlayerHealth   = 0.25
+
+# Damage multiplier added per additional party member.
+# Default: 0.10
+DungeonMaster.Scaling.PerPlayerDamage   = 0.10
+
+# Overall stat reduction for solo play.
+# Default: 0.50
+DungeonMaster.Scaling.SoloMultiplier    = 0.50
+
+# Elite trash HP multiplier (stacks on top of difficulty tier).
+# Default: 2.0
+DungeonMaster.Scaling.EliteHealthMult   = 2.0
+
+# Elite trash damage multiplier.
+# Default: 1.5
+DungeonMaster.Scaling.EliteDamageMult   = 1.5
+
+# Boss HP multiplier.
+# Default: 8.0
+DungeonMaster.Scaling.BossHealthMult    = 8.0
+
+# Boss damage multiplier.
+# Default: 1.5
+DungeonMaster.Scaling.BossDamageMult    = 1.5
+
+# Rare spawn HP multiplier.
+# Default: 4.0
+DungeonMaster.Scaling.RareHealthMult    = 4.0
+
+# Rare spawn damage multiplier.
+# Default: 2.0
+DungeonMaster.Scaling.RareDamageMult    = 2.0
+
+# ── Dungeon Settings ──────────────────────────────────────────────────────────
+
+# Number of bosses per run (placed at furthest spawn points).
+# Default: 1
+DungeonMaster.Dungeon.BossCount         = 1
+
+# % chance for a trash mob to be elite.
+# Default: 20
+DungeonMaster.Dungeon.EliteChance       = 20
+
+# Detection radius for spawned creatures in yards.
+# Default: 15.0
+DungeonMaster.Dungeon.AggroRadius       = 15.0
+
+# % chance for a rare mob to spawn per run (rolled once).
+# Default: 5
+DungeonMaster.Dungeon.RareSpawnChance   = 5
+
+# Comma-separated map ID whitelist (empty = all dungeons allowed).
+DungeonMaster.Dungeon.Whitelist = ""
+
+# Comma-separated map ID blacklist.
+DungeonMaster.Dungeon.Blacklist = ""
+
+# ── Rewards ───────────────────────────────────────────────────────────────────
+
+# Base gold reward in copper on completion. Default: 50000 (5g)
+DungeonMaster.Rewards.BaseGold          = 50000
+
+# Gold per trash mob kill in copper. Default: 50
+DungeonMaster.Rewards.GoldPerMob        = 50
+
+# Gold per boss kill in copper. Default: 10000 (1g)
+DungeonMaster.Rewards.GoldPerBoss       = 10000
+
+# XP multiplier for kills inside a session. Default: 1.0
+DungeonMaster.Rewards.XPMultiplier      = 1.0
+
+# % chance an item drops on completion. Default: 80
+DungeonMaster.Rewards.ItemChance        = 80
+
+# % chance the item is Rare quality. Default: 40
+DungeonMaster.Rewards.RareChance        = 40
+
+# % chance the item is Epic quality. Default: 15
+DungeonMaster.Rewards.EpicChance        = 15
+
+# ── Timers ────────────────────────────────────────────────────────────────────
+
+# Minutes between runs per player (0 = no cooldown). Default: 5
+DungeonMaster.Cooldown.Minutes          = 5
+
+# Enable per-run time limit. Default: 0
+DungeonMaster.TimeLimit.Enable          = 0
+
+# Time limit in minutes. Default: 30
+DungeonMaster.TimeLimit.Minutes         = 30
+
+# Max concurrent server-wide sessions. Default: 20
+DungeonMaster.MaxConcurrentRuns         = 20
+
+# ── Death ─────────────────────────────────────────────────────────────────────
+
+# Respawn dead players at dungeon entrance after combat ends. Default: 1
+DungeonMaster.Death.RespawnAtStart      = 1
+
+# Full-party wipes before auto-fail (0 = unlimited). Default: 0
+DungeonMaster.Death.MaxWipes            = 0
+
+# ── Completion ────────────────────────────────────────────────────────────────
+
+# Seconds after final boss death before party is teleported out. Default: 30
+DungeonMaster.Completion.TeleportDelay  = 30
+
+# Announce run completion server-wide. Default: 1
+DungeonMaster.Completion.Announcement   = 1
+
+# ── Roguelike Mode ────────────────────────────────────────────────────────────
+
+# Enable Roguelike (infinite escalating dungeons). Default: 1
+DungeonMaster.Roguelike.Enable              = 1
+
+# Seconds between dungeon clears (loot/buff phase). Default: 30
+DungeonMaster.Roguelike.TransitionDelay     = 30
+
+# HP scaling increase per tier (linear zone). Default: 0.10
+DungeonMaster.Roguelike.HpScalingPerTier    = 0.10
+
+# Damage scaling increase per tier. Default: 0.08
+DungeonMaster.Roguelike.DmgScalingPerTier   = 0.08
+
+# Armor scaling increase per tier. Default: 0.05
+DungeonMaster.Roguelike.ArmorScalingPerTier = 0.05
+
+# Tier at which scaling switches from linear to exponential. Default: 5
+DungeonMaster.Roguelike.ExponentialThreshold = 5
+
+# Exponential growth base beyond the threshold. Default: 1.15
+DungeonMaster.Roguelike.ExponentialFactor    = 1.15
+
+# Tier at which the first affix is applied. Default: 3
+DungeonMaster.Roguelike.AffixStartTier       = 3
+
+# Tier for the second simultaneous affix. Default: 7
+DungeonMaster.Roguelike.SecondAffixTier      = 7
+
+# Tier for the third simultaneous affix. Default: 10
+DungeonMaster.Roguelike.ThirdAffixTier       = 10
+
+# Spawn a vendor NPC at dungeon entrance during roguelike runs. Default: 1
+DungeonMaster.Roguelike.VendorEnable         = 1
+
+# Max accumulated buffs per roguelike run. Default: 20
+DungeonMaster.Roguelike.MaxBuffs             = 20
+
+# Buff pool (uncomment and customise to override defaults):
+# DungeonMaster.Roguelike.Buff.1  = "15366,Songflower Serenade,100"
+# DungeonMaster.Roguelike.Buff.2  = "22888,Rallying Cry,80"
+# DungeonMaster.Roguelike.Buff.3  = "24425,Spirit of Zandalar,80"
+# DungeonMaster.Roguelike.Buff.4  = "16609,Warchief's Blessing,80"
+# DungeonMaster.Roguelike.Buff.5  = "48161,Power Word: Fortitude,100"
+# DungeonMaster.Roguelike.Buff.6  = "48469,Gift of the Wild,100"
+
+###############################################################################
+# ──────────────────────────────────────────────────────────────────────────────
+#  SECTION 3 — GUILD SANCTUARY BRIDGE  (new — gss_guild_dungeon.cpp)
+# ──────────────────────────────────────────────────────────────────────────────
+###############################################################################
+
+# creature_template entry for the Warden of the Vault NPC.
+# Must match the entry in gss_world.sql.
+# Default: 501000
+GuildSanctuary.WardenEntry = 501000
+
+# Guild currency (Material 1) awarded to each participant on dungeon clear.
+# Flows into customs.gv_currency.material1 for the guild.
+# Default: 10
+GuildSanctuary.Reward.ClearMat1 = 10
+
+# Guild currency (Material 2) awarded to each participant on dungeon clear.
+# Default: 5
+GuildSanctuary.Reward.ClearMat2 = 5
+
+# Show the [Guild Records] page (last 5 run log) in the Warden menu.
+# Default: 1
+GuildSanctuary.ShowGuildRecords = 1
+
+###############################################################################
+# ──────────────────────────────────────────────────────────────────────────────
+#  SECTION 4 — GUILD VILLAGE PERIODIC PLAYER REWARD
+# ──────────────────────────────────────────────────────────────────────────────
+# Every N seconds of server uptime, all players currently inside their own
+# guild village receive a bundle of three rewards:
+#   1. A random gold amount between GoldMin and GoldMax
+#   2. One random Paragon Glyph item from the global glyph pool
+#   3. Either Paragon Board Points (90% default) or a full Paragon Level (10%)
+#
+# Players must be online and inside their guild's village phase when the tick
+# fires to receive the reward. Offline players do not receive backdated payouts.
+###############################################################################
+
+# How often the reward tick fires, in seconds.
+#   Default: 10800 (3 hours)
+GuildVillage.Reward.IntervalSeconds = 10800
+
+# Gold reward range in gold pieces (not copper — we do the math so you don't
+# have to stare at six-digit numbers at 2am).
+#   Default: GoldMin = 1, GoldMax = 2000
+GuildVillage.Reward.GoldMin = 1
+GuildVillage.Reward.GoldMax = 2000
+
+# Board Points awarded when the points roll wins (90% default chance).
+#   Default: 3
+GuildVillage.Reward.BoardPoints = 3
+
+# % chance the paragon reward is a full Paragon Level instead of board points.
+# Remaining % goes to board points. Must be 0–100.
+#   Default: 10
+GuildVillage.Reward.FullLevelChancePct = 10
+
+###############################################################################
+# ──────────────────────────────────────────────────────────────────────────────
+#  SECTION 4 — DUNGEON RESPAWN  (from mod-DungeonRespawn)
+# ──────────────────────────────────────────────────────────────────────────────
+###############################################################################
+
+# Master on/off switch. When enabled, players who die inside a dungeon or raid
+# are resurrected at their last known in-dungeon position rather than being
+# teleported to the nearest graveyard outside.
+# Default: 0 - Disabled
+#          1 - Enabled
+DungeonRespawn.Enable = 0
+
+# The percentage of maximum health the player is resurrected with.
+# Range:   0.0 - 100.0
+# Default: 50.0
+DungeonRespawn.RespawnHealthPct = 50.0
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>
+# Released under GNU AGPL v3 license.
+#
+# mod_synival_paragon.conf
+# Copy this file to your worldserver config directory and remove the .dist suffix.
+#
+# Synival's Chosen — A Diablo 4 Inspired Module
+# ─────────────────────────────────────────────────────────────────────────────
+# This module combines two systems:
+#
+#   PARAGON SYSTEM
+#     Paragon XP progression, Prestige (up to 10 resets), Paragon Board
+#     node unlocks and glyphs, stat scaling, Mark of the Ascended,
+#     Hidden Affix loot enchants, Kadala gambling NPC, daily Cache reward,
+#     Runic Archive NPC, and The Butcher world event at Prestige 10.
+#
+#   LOOT SYSTEM
+#     Five-tier item rarity (Normal through Synival's Chosen), stat scaling
+#     on all looted items, auto-loot, auto-sell with combat-leave summary,
+#     60 class-specific Legendary items (6 per class), Legendary Vendor NPC,
+#     and Paragon Shard currency drops from elite kills.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[worldserver]
+
+###############################################################################
+# ── PARAGON SYSTEM ────────────────────────────────────────────────────────────
+###############################################################################
+
+# Paragon.Enable
+#   0 = Entire module disabled
+#   1 = Module active
+#   Default: 1
+Paragon.Enable = 1
+
+# Paragon.XPPerLevel
+#   XP required per Paragon Level. All XP earned at level 80 goes here.
+#   Default: 1500000
+Paragon.XPPerLevel = 1500000
+
+# Paragon.BaseCap
+#   Max Paragon Level before Prestige 10.
+#   Default: 200
+Paragon.BaseCap = 200
+
+# Paragon.ExtendedCap
+#   Max Paragon Level after Prestige 10. Also triggers The Butcher event.
+#   Default: 2000
+Paragon.ExtendedCap = 2000
+
+# Paragon.MaxPrestige
+#   Maximum prestige resets allowed.
+#   Default: 10
+Paragon.MaxPrestige = 10
+
+# Paragon.StatBonusPerLevel
+#   % bonus to all primary stats (STR/AGI/STA/INT/SPI) per Paragon Level.
+#   At Paragon 200 with default 0.5: +100% total — exactly hits StatBonusCap.
+#   At Paragon 100: +50%. Progression feels linear and capped cleanly at cap.
+#   Default: 0.5
+Paragon.StatBonusPerLevel = 0.5
+
+# Paragon.StatBonusCap
+#   Hard ceiling on the paragon-level stat bonus in percent.
+#   Prevents stat runaway at high Paragon levels regardless of StatBonusPerLevel.
+#   The Mark of the Ascended bonus is applied on top of this cap separately.
+#   Example: StatBonusPerLevel = 0.5, BaseCap = 200 → hits cap at exactly 200.
+#   Default: 100.0
+Paragon.StatBonusCap = 100.0
+
+# Paragon.MarkBonusPercent
+#   Permanent flat % stat bonus from using Mark of the Ascended (item 99300).
+#   Default: 15.0
+Paragon.MarkBonusPercent = 15.0
+
+# Paragon.BoardPointKillChance
+#   % chance a creature kill awards 1 Board Point.
+#   Board Points are also awarded +1 per Paragon Level gained.
+#   Default: 5
+Paragon.BoardPointKillChance = 5
+
+# Paragon.PrestigeBoardPointBonus
+#   Board Points granted to the player each time they Prestige.
+#   These stack on top of any unspent points — board nodes are always kept.
+#   Default: 5
+Paragon.PrestigeBoardPointBonus = 5
+
+# ── Cache of Synival's Treasures ──────────────────────────────────────────────
+
+# Paragon.CacheShardMin / Paragon.CacheShardMax
+#   Minimum and maximum Paragon Shards awarded when opening the daily Cache.
+#   A uniform random value between Min and Max (inclusive) is chosen each time.
+#   Default: 5 / 15
+Paragon.CacheShardMin = 5
+Paragon.CacheShardMax = 15
+
+# Paragon.CacheLegendaryChance
+#   % chance the Cache awards a Legendary quality piece of equipment.
+#   Evaluated first. If this roll succeeds, the Epic roll is skipped.
+#   Default: 5
+Paragon.CacheLegendaryChance = 5
+
+# Paragon.CacheEpicChance
+#   % chance the Cache awards an Epic quality piece of equipment.
+#   Only evaluated if the Legendary roll failed.
+#   The remaining chance (100 - Legendary - Epic) yields a Rare quality item.
+#   Default: 25
+Paragon.CacheEpicChance = 25
+
+# Paragon.HiddenAffixChance
+#   % chance a looted uncommon+ weapon or armour rolls a Hidden Affix enchant.
+#   Pool: Mongoose, Berserking, Black Magic, Tuskarr's Vitality, Crusader.
+#   Default: 15
+Paragon.HiddenAffixChance = 15
+
+# Paragon.PrestigeAchievId
+#   Achievement ID required before a player may Prestige.
+#   Default: 2139 (Glory of the Hero — all WotLK heroic dungeons)
+Paragon.PrestigeAchievId = 2139
+
+# Paragon.KadalaCostStandard
+#   Cost in copper for a Standard item roll at Kadala. 10000 = 1g.
+#   Default: 10000
+Paragon.KadalaCostStandard = 10000
+
+# Paragon.KadalaCostPremium
+#   Cost in copper for a Premium (rare+ guaranteed) item roll at Kadala.
+#   Default: 50000 (5g)
+Paragon.KadalaCostPremium = 50000
+
+# Paragon.SpellAscensionGlow
+#   Aura applied on Prestige and on use of Mark of the Ascended.
+#   Default: 46565
+Paragon.SpellAscensionGlow = 46565
+
+# Paragon.SpellMaxParagonAura
+#   Aura applied when a player reaches the Paragon Level cap.
+#   Default: 72523
+Paragon.SpellMaxParagonAura = 72523
+
+# Paragon.SpellLevelUpPillar
+#   Green light pillar effect played on every Paragon Level gain.
+#   Default: 24750
+Paragon.SpellLevelUpPillar = 24750
+
+###############################################################################
+# ── LOOT SYSTEM ───────────────────────────────────────────────────────────────
+###############################################################################
+
+# Loot.Enable
+#   0 = Loot system disabled (Paragon system still runs normally)
+#   1 = Loot system active
+#   Default: 1
+Loot.Enable = 1
+
+# Loot.ScalingEnable
+#   Enable stat scaling on looted items.
+#   Default: 1
+Loot.ScalingEnable = 1
+
+# Loot.ParagonScalePerLevel
+#   Bonus stat multiplier per Paragon Level applied to looted items.
+#   At Paragon 200 with default 0.005: paragonFactor = 2.0 (+100% stats).
+#   Default: 0.005
+Loot.ParagonScalePerLevel = 0.005
+
+# ── Rarity Tier Multipliers ──────────────────────────────────────────────────
+# Stat multiplier applied when an item rolls each tier.
+# Full formula: scaledStat = base x levelFactor x paragonFactor x tierMult
+Loot.TierMult.Normal        = 1.00
+Loot.TierMult.Heroic        = 1.25
+Loot.TierMult.Mythic        = 1.50
+Loot.TierMult.Ascended      = 2.00
+Loot.TierMult.SynivalChosen = 3.00
+
+# ── Rarity Tier Roll Chances ─────────────────────────────────────────────────
+# Must sum to 100.
+Loot.TierChance.Normal        = 60
+Loot.TierChance.Heroic        = 25
+Loot.TierChance.Mythic        = 10
+Loot.TierChance.Ascended      = 4
+Loot.TierChance.SynivalChosen = 1
+
+# -- Auto-Kill Loot -----------------------------------------------------------
+# Loot.AutoLootOnKill
+#   When enabled, a creature's loot is automatically collected into the player's
+#   bags the moment they kill it. No right-click on the corpse is needed.
+#
+#   Implementation: OnPlayerCreatureKill enqueues the kill. WorldScript::OnUpdate
+#   drains the queue each tick, processing loot once UNIT_DYNFLAG_LOOTABLE is
+#   confirmed set by Creature::JustDied(). This deferred approach is crash-safe
+#   (loot is fully generated before we read it) and bot-safe (playerbots are
+#   guarded with IsBot() under PLAYERBOTS).
+#   Group loot rules (Need/Greed, Master Loot, Round Robin) are honoured.
+#   Default: 1
+Loot.AutoLootOnKill = 1
+
+# Loot.AutoSkin
+#   Automatically skin creature corpses after the normal loot is collected.
+#   Requires the player to have Skinning trained to at least the level required
+#   for that creature (creature level * 5). Fires after UNIT_DYNFLAG_LOOTABLE
+#   clears from the corpse to avoid interfering with normal loot.
+#   Skill-up and craft XP are awarded normally via UpdateGatherSkill.
+#   Default: 1
+Loot.AutoSkin = 1
+
+# Loot.AutoGather
+#   Automatically harvest nearby herb and ore nodes within AutoGatherRange yards.
+#   The player must have Herbalism or Mining trained to the required skill level.
+#   Combat, mounted, and dead players are skipped. Scan fires once per second.
+#   Default: 1
+Loot.AutoGather = 1
+
+# Loot.AutoChest
+#   Automatically open unlocked chests and lootable containers within
+#   AutoGatherRange yards. No profession skill is required.
+#   Combat, mounted, and dead players are skipped.
+#   Default: 1
+Loot.AutoChest = 1
+
+# Loot.AutoGatherRange
+#   Radius in yards for the AutoGather and AutoChest proximity scan.
+#   Lower values feel more natural; higher values are more convenient.
+#   Default: 30.0
+Loot.AutoGatherRange = 30.0
+
+# Loot.CoffingtonBypassSpellId
+#   Spell ID of the "Master of All Trades" passive learned from Ser Coffington
+#   (NPC 133700). Players who own this spell bypass the Herbalism, Mining, and
+#   Skinning skill requirements for auto-gather and auto-skin. The spell itself
+#   is defined in spell_dbc (coffington_world.sql). Change this only if you
+#   reassign the custom spell to a different ID.
+#   Default: 60000
+Loot.CoffingtonBypassSpellId = 60000
+
+# Loot.AutoLootShareGold
+#   Distribute looted gold among group members within Loot.AutoLootShareRange yards.
+#   Default: 1
+Loot.AutoLootShareGold = 1
+
+# Loot.AutoLootShareRange
+#   Radius in yards within which group members receive a share of looted gold.
+#   Default: 60.0
+Loot.AutoLootShareRange = 60.0
+
+# Loot.AutoSellEnable
+#   Automatically sell poor quality and unprotected white items.
+#   Gold summary printed when leaving combat.
+#   Default: 1
+Loot.AutoSellEnable = 1
+
+# Loot.AutoSellMode
+#   0 = Sell when player opens any vendor
+#   1 = Sell immediately at loot time
+#   Default: 0
+Loot.AutoSellMode = 0
+
+# Loot.AutoSellGrayItems
+#   Whether this module sells gray (poor quality) items as part of auto-sell.
+#   Default: 1 — this module is the authoritative gray-sell handler and covers
+#   everything mod-junk-to-gold does (plus rarity tiers, scaling, shards, etc.).
+#   mod-junk-to-gold is therefore entirely redundant when this module is loaded
+#   and should simply not be installed alongside it.
+#
+#   WARNING: If you insist on running both modules simultaneously, you MUST set
+#   this to 0. Both modules calling DestroyItem on the same gray item will crash
+#   the worldserver (ACCESS_VIOLATION in Object::GetUInt32Value). The recommended
+#   solution is to remove mod-junk-to-gold instead.
+#   Default: 1
+Loot.AutoSellGrayItems = 1
+
+# Loot.LegendaryCostGold
+#   Cost in copper per Legendary piece at the vendor. 5000000 = 500g.
+#   Default: 5000000
+Loot.LegendaryCostGold = 5000000
+
+# Loot.LegendaryCostShards
+#   Paragon Shards required per Legendary piece.
+#   Default: 50
+Loot.LegendaryCostShards = 50
+
+# Loot.ShardDropChance
+#   % chance an elite or boss drops 1 Paragon Shard on kill.
+#   Default: 10
+Loot.ShardDropChance = 10
+
+###############################################################################
+# ── RANDOM ENCHANTS ───────────────────────────────────────────────────────────
+###############################################################################
+
+# RandomEnchants.Enable
+#   0 = Random enchants disabled
+#   1 = Random enchants active
+#   Default: 1
+RandomEnchants.Enable = 1
+
+# RandomEnchants.Chance
+#   % chance per eligible weapon or armour that a random permanent enchantment
+#   is applied when the item is looted. Items that already carry a permanent
+#   enchantment are never overwritten.
+#   Default: 30
+RandomEnchants.Chance = 30
+
+# RandomEnchants.MinQuality
+#   Minimum item quality required for the enchant roll to trigger.
+#   1 = Common (white)   2 = Uncommon (green)   3 = Rare (blue)   4 = Epic
+#   Default: 2 (Uncommon and above)
+RandomEnchants.MinQuality = 2
+
+###############################################################################
+# ── SOLO LFG ──────────────────────────────────────────────────────────────────
+###############################################################################
+
+# SoloLFG.Enable
+#   0 = Solo LFG feature disabled
+#   1 = Solo LFG active (players can use .soloqueue)
+#   Default: 1
+SoloLFG.Enable = 1
+
+# SoloLFG.StatBoostPct
+#   % bonus to all primary stats while inside a solo dungeon instance.
+#   Removed automatically when the player leaves the instance or logs out.
+#   Default: 200
+SoloLFG.StatBoostPct = 200
+
+# SoloLFG.HealBoostPct
+#   Additional % bonus applied to Spirit specifically, approximating
+#   a healing output increase for solo runs.
+#   Default: 300
+SoloLFG.HealBoostPct = 300
+
+###############################################################################
+# ── SKIP DK STARTING AREA ────────────────────────────────────────────────────
+###############################################################################
+
+# SkipDK.Enable
+#   0 = Skip DK feature disabled
+#   1 = Active (.skipdk command available to Death Knights in Acherus)
+#   Default: 1
+SkipDK.Enable = 1
+
+# SkipDK.AutoSkip
+#   0 = Player must type .skipdk to trigger the skip
+#   1 = Skip is applied automatically the first time a new DK logs in
+#       while on map 609 (Acherus) with no Acherus quests yet complete
+#   Default: 0
+SkipDK.AutoSkip = 0
+
+###############################################################################
+# ── OPEN WORLD BALANCE (OWB) ─────────────────────────────────────────────────
+###############################################################################
+
+# OWB.Enable
+#   Master switch for open-world creature scaling.
+#   0 = Disabled   1 = Enabled
+#   Default: 1
+OWB.Enable = 1
+
+# OWB.EnableEasternKingdoms / OWB.EnableKalimdor
+# OWB.EnableOutland / OWB.EnableNorthrend
+#   Per-continent toggles (map IDs 0, 1, 530, 571 respectively).
+#   Default: 1 (all enabled)
+OWB.EnableEasternKingdoms = 1
+OWB.EnableKalimdor        = 1
+OWB.EnableOutland         = 1
+OWB.EnableNorthrend       = 1
+
+# OWB.ScaleRadius
+#   Radius in yards around a creature within which players are counted
+#   for the scaling calculation.
+#   Default: 150.0
+OWB.ScaleRadius = 150.0
+
+# OWB.ReferenceGroupSize
+#   The "full group" size used as the denominator in the scaling curve.
+#   At this many nearby players the creature runs at near-full strength.
+#   Default: 5
+OWB.ReferenceGroupSize = 5
+
+# OWB.InflectionPoint
+#   Sigmoid curve midpoint (0.0–1.0).
+#   0.5 = creature reaches 50% strength when half a reference group is present.
+#   Default: 0.5
+OWB.InflectionPoint = 0.5
+
+# OWB.CurveFloor
+#   Minimum multiplier applied when 0 players are nearby (solo scaling floor).
+#   Default: 0.40  (creature runs at 40% strength when completely alone)
+OWB.CurveFloor = 0.40
+
+# OWB.CurveCeiling
+#   Maximum multiplier (full strength cap).
+#   Default: 1.0
+OWB.CurveCeiling = 1.0
+
+# OWB.MinHPModifier
+#   Hard floor on the HP multiplier regardless of curve result.
+#   Default: 0.40
+OWB.MinHPModifier = 0.40
+
+# OWB.MinDamageModifier
+#   Hard floor on the damage multiplier regardless of curve result.
+#   Default: 0.10
+OWB.MinDamageModifier = 0.10
+
+# OWB.StatModifier_Health / OWB.StatModifier_Damage / OWB.StatModifier_Mana
+#   Global multipliers applied on top of the sigmoid result for fine-tuning.
+#   Default: 1.0 (no additional scaling)
+OWB.StatModifier_Health = 1.0
+OWB.StatModifier_Damage = 1.0
+OWB.StatModifier_Mana   = 1.0
+
+# OWB.Announcement
+#   1 = Notify players in chat when entering a scaled open-world zone.
+#   Default: 1
+OWB.Announcement = 1
+
+###############################################################################
+# ── BUFF COMMAND ─────────────────────────────────────────────────────────────
+###############################################################################
+# BuffCommand.Enable
+#   0 = .playerbuff and .learnbuffs disabled
+#   1 = enabled (default)
+BuffCommand.Enable = 1
+
+###############################################################################
+# ── OLD-WORLD FLYING ─────────────────────────────────────────────────────────
+###############################################################################
+
+# OldWorldFlying.SpellId
+#   Spell ID of "World Flight Mastery" — the permission token that grants
+#   players the ability to fly in Eastern Kingdoms and Kalimdor.
+#   Must match the ID inserted via 01_world_flight_spell.sql.
+#   Requires AreaTable.dbc to be patched client-side (provided separately).
+#   Default: 200010
+OldWorldFlying.SpellId = 200010
+
+# OldWorldFlying.AllPlayersFly
+#   0 = Spell required (players must possess OldWorldFlying.SpellId)
+#   1 = All players fly unconditionally — Blizzard's restrictions treated
+#       as creative suggestions rather than binding legislation
+#   Default: 0
+OldWorldFlying.AllPlayersFly = 0
